@@ -1,0 +1,19 @@
+{
+  "name": "scraper-google-reviews",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "build": "node app.js"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "google-reviews-web-scraper": "^1.0.2",
+    "nodemon": "^2.0.20",
+    "puppeteer": "^19.2.2",
+    "puppeteer-extra": "^3.3.4",
+    "puppeteer-extra-plugin-stealth": "^2.11.1"
+  }
+}
