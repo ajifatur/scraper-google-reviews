@@ -55,7 +55,7 @@ app.get('/', (req, res) => {
         res.json({
             data: data
         });
-    });
+    }).catch(error => console.log(error));
 });
 
 app.use((req, res, next) => {
