@@ -1,13 +1,5 @@
-const express = require('express');
-const cors = require('cors');
 const puppeteer = require('puppeteer');
-
-const app = express();
-const port = process.env.PORT || 8080;
-
-app.use(cors({
-    origin: '*'
-}));
+const http = require('http');
 
 let scrape = async () => {
     const browser = await puppeteer.launch({args: ['--no-sandbox', '--disabled-setuid-sandbox']}); // Prevent non-needed issues for *NIX
@@ -15,10 +7,9 @@ let scrape = async () => {
     const url = "https://www.google.com/maps/place/Spandiv+Digital+Solutions/@-7.0283374,110.4095784,17z/data=!4m21!1m13!4m12!1m4!2m2!1d110.4142924!2d-7.0265508!4e1!1m6!1m2!1s0x899e6ccd5b885c33:0xf51337faee27cf8e!2sSpandiv+Digital+Solutions+Kota+Semarang!2m2!1d110.4092872!2d-7.0308964!3m6!1s0x899e6ccd5b885c33:0xf51337faee27cf8e!8m2!3d-7.0308964!4d110.4092872!9m1!1b1"; // The URL...
 
     await page.goto(url); // Define the Maps URL to Scrape...
-    await page.waitForTimeout(1000); // In case Server has JS needed to be loaded...
+    await page.waitForTimeout(5000); // In case Server has JS needed to be loaded...
 
 	const result = await page.evaluate(() => { // Let's create variables and store values...
-
         return Array.from(document.querySelectorAll(".jftiEf")).map((el) => {
             return {
                 user: {
@@ -48,20 +39,9 @@ let scrape = async () => {
 	return result; // Return the results with the Review...
 }
 
-app.get('/', (req, res) => {
-    // Scrape and output the results...
-    scrape().then((value) => {
-        let data = value;
-        res.json({
-            data: data
-        });
-    }).catch(error => console.log(error));
-});
-
-app.use((req, res, next) => {
-    res.status(404).send('Route is not found!');
-});
-
-app.listen(port, () => {
-    console.log(`App listening on port ${port}...`);
-});
+scrape().then((value) => {
+	http.createServer(function(request, response) {
+		let data = JSON.stringify(value);
+		response.end(data);
+	}).listen(process.env.PORT);
+}).catch(error => console.log(error));
