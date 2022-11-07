@@ -42,6 +42,7 @@ let scrape = async () => {
 scrape().then((value) => {
 	http.createServer(function(request, response) {
 		let data = JSON.stringify(value);
+		response.setHeader('Access-Control-Allow-Origin', '*');
 		response.end(data);
 	}).listen(process.env.PORT);
 }).catch(error => console.log(error));
